@@ -42,6 +42,11 @@ $categories = labCategories();
                 <strong>Beginner → Advanced</strong>
                 <p><a href="attack_paths.php">Open the attack learning paths</a> for staged practice and hints.</p>
             </div>
+            <div class="command-card">
+                <span>Challenges</span>
+                <strong>Scenario Missions</strong>
+                <p><a href="challenges.php">Open challenge mode</a> for persona-based exercises.</p>
+            </div>
         </section>
 
         <section class="feature-section">

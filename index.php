@@ -27,6 +27,8 @@ $db_bootstrap_status = $GLOBALS['db_bootstrap_status'] ?? null;
             <a href="index.php">Home</a>
             <a href="pages/owasp_lab.php">OWASP Labs</a>
             <a href="pages/attack_paths.php">Attack Paths</a>
+            <a href="pages/challenges.php">Challenges</a>
+            <a href="pages/progress.php">Progress</a>
             <a href="pages/report_builder.php">Reports</a>
             <a href="pages/instructor_mode.php">Instructor</a>
             <a href="pages/login_secure.php">Secure Login</a>
@@ -58,6 +60,7 @@ $db_bootstrap_status = $GLOBALS['db_bootstrap_status'] ?? null;
                 <div class="hero-actions">
                     <a class="btn-primary" href="pages/owasp_lab.php">Open OWASP Mission Control</a>
                     <a class="btn-secondary-link" href="pages/attack_paths.php">Choose Attack Path</a>
+                    <a class="btn-secondary-link" href="pages/challenges.php">Start Challenges</a>
                     <a class="btn-primary" href="pages/login_vulnerable.php">Launch Vulnerable Login</a>
                     <a class="btn-secondary-link" href="pages/login_secure.php">Compare Secure Version</a>
                 </div>
@@ -139,8 +142,22 @@ $db_bootstrap_status = $GLOBALS['db_bootstrap_status'] ?? null;
                 <article class="feature-card dangerous">
                     <span class="card-tag">Learning Paths</span>
                     <h4>Beginner to Advanced Attacks</h4>
-                    <p>Practice five attack scenarios with staged hints, target pages, payloads, and evidence worksheets.</p>
+                    <p>Practice attack scenarios with staged hints, target pages, payloads, walkthroughs, and evidence worksheets.</p>
                     <a href="pages/attack_paths.php">Open attack paths</a>
+                </article>
+
+                <article class="feature-card dangerous">
+                    <span class="card-tag">Challenges</span>
+                    <h4>Scenario Missions</h4>
+                    <p>Use role-based missions for student, teacher, admin, and security engineer practice.</p>
+                    <a href="pages/challenges.php">Open challenges</a>
+                </article>
+
+                <article class="feature-card secure">
+                    <span class="card-tag">Instructor Tool</span>
+                    <h4>Reset and Progress</h4>
+                    <p>Restore lab data, clear session progress, and track exploited or reported attacks.</p>
+                    <a href="pages/progress.php">View progress</a>
                 </article>
 
                 <article class="feature-card dangerous">

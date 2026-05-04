@@ -2,8 +2,11 @@
 include '../includes/config.php';
 require_once '../includes/lab_ui.php';
 require_once '../includes/attack_config.php';
+require_once '../includes/lab_state.php';
 
 $tiers = attacksByTier();
+$progress = labProgress();
+$totals = progressTotals();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +18,7 @@ $tiers = attacksByTier();
         <div class="container">
             <div class="lab-kicker">Learner Tracks</div>
             <h1>Attack Learning Paths</h1>
-            <p>Practice 5 attack types across beginner, intermediate, and advanced tracks.</p>
+            <p>Practice <?php echo e($totals['total']); ?> attack types across beginner, intermediate, and advanced tracks.</p>
         </div>
     </header>
 
@@ -38,6 +41,11 @@ $tiers = attacksByTier();
                 <strong>Chain and Extract</strong>
                 <p>Reason about query shape, data mapping, and impact.</p>
             </div>
+            <div class="command-card">
+                <span>Progress</span>
+                <strong><?php echo e($totals['exploited']); ?> / <?php echo e($totals['total']); ?></strong>
+                <p><a href="progress.php">Open scoreboard</a> or reset from the lab reset console.</p>
+            </div>
         </section>
 
         <?php foreach ($tiers as $tier => $attacks): ?>
@@ -52,6 +60,11 @@ $tiers = attacksByTier();
                             <span class="card-tag"><?php echo e($attack['owasp']); ?></span>
                             <h4><?php echo e($attack['title']); ?></h4>
                             <p><?php echo e($attack['goal']); ?></p>
+                            <div class="progress-strip">
+                                <span class="<?php echo !empty($progress[$id]['attempted']) ? 'done' : ''; ?>">Attempt</span>
+                                <span class="<?php echo !empty($progress[$id]['exploited']) ? 'done' : ''; ?>">Exploit</span>
+                                <span class="<?php echo !empty($progress[$id]['reported']) ? 'done' : ''; ?>">Report</span>
+                            </div>
                             <div class="tile-meta">
                                 <?php foreach ($attack['skills'] as $skill): ?>
                                     <span><?php echo e($skill); ?></span>

@@ -37,6 +37,11 @@ $categories = labCategories();
                 <strong>Local Lab</strong>
                 <p>Do not expose this simulator as a production application.</p>
             </div>
+            <div class="command-card">
+                <span>Utilities</span>
+                <strong>Reset + Progress</strong>
+                <p><a href="lab_reset.php">Reset data</a> or <a href="progress.php">review progress</a>.</p>
+            </div>
         </section>
 
         <section class="lab-panel">

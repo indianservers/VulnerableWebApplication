@@ -23,6 +23,9 @@ function renderLabNav(): void {
     echo '<a href="' . e($base . 'index.php') . '">Portal</a>';
     echo '<a href="' . e($base . 'pages/owasp_lab.php') . '">OWASP Labs</a>';
     echo '<a href="' . e($base . 'pages/attack_paths.php') . '">Attack Paths</a>';
+    echo '<a href="' . e($base . 'pages/challenges.php') . '">Challenges</a>';
+    echo '<a href="' . e($base . 'pages/progress.php') . '">Progress</a>';
+    echo '<a href="' . e($base . 'pages/lab_reset.php') . '">Reset</a>';
     echo '<a href="' . e($base . 'pages/report_builder.php') . '">Reports</a>';
     echo '<a href="' . e($base . 'pages/instructor_mode.php') . '">Instructor</a>';
     echo '<a href="' . e($base . 'pages/login_vulnerable.php') . '">SQLi Login</a>';
@@ -74,6 +77,28 @@ function renderNotebook(array $lab): void {
     echo '<div class="form-group"><label>Evidence</label><textarea rows="5" placeholder="' . e($lab['evidence']) . '"></textarea></div>';
     echo '<div class="form-group"><label>Remediation Note</label><textarea rows="4">' . e($lab['remediation']) . '</textarea></div>';
     echo '<button type="button" class="btn-primary mark-complete">Mark Exploited</button>';
+    echo '</section>';
+}
+
+function renderRequestInspector(?string $target = null): void {
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    $role = $_SESSION['role'] ?? 'guest';
+    $query = $_GET;
+    $post = $_POST;
+
+    echo '<section class="lab-panel request-inspector">';
+    echo '<h2>Live Request Inspector</h2>';
+    echo '<div class="inspector-grid">';
+    echo '<div><strong>Method</strong><span>' . e($method) . '</span></div>';
+    echo '<div><strong>Current Role</strong><span>' . e($role) . '</span></div>';
+    echo '<div><strong>URI</strong><span>' . e($uri) . '</span></div>';
+    echo '<div><strong>Lab Target</strong><span>' . e($target ?? 'Current page') . '</span></div>';
+    echo '</div>';
+    echo '<div class="split-compare">';
+    echo '<div><h3>GET Params</h3><div class="code-block"><code>' . e(json_encode($query, JSON_PRETTY_PRINT)) . '</code></div></div>';
+    echo '<div><h3>POST Params</h3><div class="code-block"><code>' . e(json_encode($post, JSON_PRETTY_PRINT)) . '</code></div></div>';
+    echo '</div>';
     echo '</section>';
 }
 ?>

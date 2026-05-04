@@ -119,6 +119,190 @@ function attackScenarios(): array {
                 'The visible news result expects id, title, content, author, published date, and views.',
                 "Try the provided UNION payload, then explain which user fields mapped into title/content/author."
             )
+        ),
+        'csrf-admin-delete' => array(
+            'title' => 'CSRF Admin Delete Action',
+            'tier' => 'Intermediate',
+            'owasp' => 'A01 Broken Access Control',
+            'target' => 'pages/user_management.php',
+            'goal' => 'Understand how state-changing GET links can be triggered without a CSRF token.',
+            'story' => 'Admin delete actions are represented as links, making the workflow easy to trigger from a crafted URL.',
+            'skills' => array('CSRF reasoning', 'State change review', 'Admin workflow testing', 'Token analysis'),
+            'steps' => array(
+                'Log in as admin in the lab environment.',
+                'Inspect a delete link in user management.',
+                'Observe that the action is a GET request with an ID.',
+                'Document why a POST form with CSRF token would be safer.'
+            ),
+            'payloads' => array('user_management.php?action=delete&id=2', '<img src="/pages/user_management.php?action=delete&id=2">'),
+            'success' => 'The learner can explain how a browser could trigger the state change with an authenticated admin session.',
+            'hints' => array(
+                'Look at the action links in the management table.',
+                'A state-changing operation should not be a simple GET link.',
+                'The missing ingredient is an unpredictable per-session CSRF token.',
+                'Use this as a reasoning lab; do not delete users you still need for later exercises.'
+            )
+        ),
+        'file-upload-bypass' => array(
+            'title' => 'File Upload Bypass Simulation',
+            'tier' => 'Intermediate',
+            'owasp' => 'A05 Security Misconfiguration',
+            'target' => 'pages/lab_scenario.php?cat=A05',
+            'goal' => 'Analyze unsafe upload design and propose bypass tests.',
+            'story' => 'A simulated school document upload accepts file names and types without a server-side policy.',
+            'skills' => array('Extension review', 'MIME reasoning', 'Storage path review', 'Execution risk'),
+            'steps' => array(
+                'Open the A05 scenario page.',
+                'List the file checks a real upload feature should perform.',
+                'Compare extension-only checks against MIME and content validation.',
+                'Write a finding for unsafe upload design.'
+            ),
+            'payloads' => array('shell.php.jpg', 'report.pdf.php', 'image/svg+xml with script', '../../uploads/report.php'),
+            'success' => 'The learner documents how upload validation and storage isolation should work.',
+            'hints' => array(
+                'Extension checks alone are not enough.',
+                'Uploaded files should not execute as server code.',
+                'Randomized names and storage outside web root reduce impact.',
+                'This is a design simulation until a real upload page is added.'
+            )
+        ),
+        'account-enumeration' => array(
+            'title' => 'Account Enumeration',
+            'tier' => 'Beginner',
+            'owasp' => 'A07 Identification and Authentication Failures',
+            'target' => 'pages/login_secure.php',
+            'goal' => 'Compare login responses and timing to infer whether accounts exist.',
+            'story' => 'Authentication pages can accidentally reveal account validity through messages, redirects, or behavior.',
+            'skills' => array('Response comparison', 'Username testing', 'Auth UX review', 'Evidence notes'),
+            'steps' => array(
+                'Try a real username with a wrong password.',
+                'Try a made-up username with a wrong password.',
+                'Compare response text and behavior.',
+                'Record whether the app leaks account existence.'
+            ),
+            'payloads' => array('admin / wrongpass', 'not_a_user / wrongpass', 'student1 / wrongpass'),
+            'success' => 'The learner records whether responses are distinguishable or properly generic.',
+            'hints' => array(
+                'Use the same wrong password for each username.',
+                'Compare response text, HTTP behavior, and timing.',
+                'Generic errors help prevent enumeration.',
+                'Known lab accounts are listed on the home page.'
+            )
+        ),
+        'session-role-review' => array(
+            'title' => 'Weak Session Role Review',
+            'tier' => 'Advanced',
+            'owasp' => 'A07 Identification and Authentication Failures',
+            'target' => 'pages/lab_scenario.php?cat=A07',
+            'goal' => 'Review how session role values drive access decisions across dashboards.',
+            'story' => 'The portal stores role information in session state and checks it directly on protected pages.',
+            'skills' => array('Session review', 'Role boundaries', 'Access matrix', 'Fix design'),
+            'steps' => array(
+                'Log in as different roles.',
+                'Try direct dashboard URLs.',
+                'Record which pages enforce role checks.',
+                'Design a centralized authorization helper.'
+            ),
+            'payloads' => array('Direct /pages/admin_dashboard.php', 'Direct /pages/teacher_dashboard.php', 'Direct /pages/student_dashboard.php'),
+            'success' => 'The learner maps role checks and identifies where centralized authorization would reduce risk.',
+            'hints' => array(
+                'Direct URL access is part of the test.',
+                'Look for repeated role checks in page headers.',
+                'Session regeneration after login matters.',
+                'Centralized auth helpers reduce inconsistent page behavior.'
+            )
+        ),
+        'path-traversal-report' => array(
+            'title' => 'Path Traversal Report Access Simulation',
+            'tier' => 'Advanced',
+            'owasp' => 'A01 Broken Access Control',
+            'target' => 'pages/lab_scenario.php?cat=A01',
+            'goal' => 'Reason about unsafe file path parameters for report-card downloads.',
+            'story' => 'A simulated download feature accepts a file name without normalizing or restricting it.',
+            'skills' => array('Path normalization', 'Allowlist design', 'Sensitive file thinking', 'Download controls'),
+            'steps' => array(
+                'Open the A01 scenario page.',
+                'Identify where a file parameter would cross a trust boundary.',
+                'Test traversal strings in the worksheet.',
+                'Write a fix using allowlisted report IDs instead of file paths.'
+            ),
+            'payloads' => array('../config.php', '..\\..\\includes\\config.php', '../../database_enhanced.sql'),
+            'success' => 'The learner explains why direct file path input should be replaced with authorized object IDs.',
+            'hints' => array(
+                'Traversal payloads try to escape the intended directory.',
+                'Windows and Linux separators can differ.',
+                'Never use a user-supplied path as the source of truth.',
+                'Map report IDs to server-side paths after authorization.'
+            )
+        ),
+        'open-redirect' => array(
+            'title' => 'Open Redirect Simulation',
+            'tier' => 'Beginner',
+            'owasp' => 'A04 Insecure Design',
+            'target' => 'pages/lab_scenario.php?cat=A04',
+            'goal' => 'Learn how unsafe return URL parameters can support phishing.',
+            'story' => 'A simulated post-login redirect trusts a next parameter without validating the destination.',
+            'skills' => array('URL review', 'Phishing impact', 'Allowlist thinking', 'Redirect validation'),
+            'steps' => array(
+                'Open the A04 scenario page.',
+                'Add a fake next URL to the worksheet.',
+                'Explain how a trusted domain can redirect to an attacker-controlled page.',
+                'Write an allowlist-based remediation.'
+            ),
+            'payloads' => array('?next=https://evil.example/login', '?return=//evil.example', '?redirect=/pages/admin_dashboard.php'),
+            'success' => 'The learner documents how unvalidated redirects can support credential theft.',
+            'hints' => array(
+                'Redirects are dangerous when users trust the starting domain.',
+                'Protocol-relative URLs can be surprising.',
+                'Internal relative paths are usually safer than full external URLs.',
+                'Allowlist known local destinations.'
+            )
+        ),
+        'clickjacking-framing' => array(
+            'title' => 'Clickjacking Framing Review',
+            'tier' => 'Intermediate',
+            'owasp' => 'A05 Security Misconfiguration',
+            'target' => 'pages/lab_scenario.php?cat=A05',
+            'goal' => 'Check whether sensitive pages define anti-framing protections.',
+            'story' => 'Sensitive workflows can be hidden in transparent frames if the site lacks frame restrictions.',
+            'skills' => array('Header review', 'UI redress', 'Sensitive action mapping', 'Browser security'),
+            'steps' => array(
+                'Choose a sensitive action page.',
+                'Review whether frame-ancestors or X-Frame-Options is present.',
+                'Document which pages should not be framed.',
+                'Recommend a frame-ancestors CSP policy.'
+            ),
+            'payloads' => array('<iframe src="/pages/grade_tampering.php"></iframe>', "Content-Security-Policy: frame-ancestors 'self'"),
+            'success' => 'The learner identifies missing anti-framing headers and writes the expected policy.',
+            'hints' => array(
+                'Clickjacking is often about missing headers, not form code.',
+                'Sensitive state-changing pages deserve stronger protection.',
+                'Modern CSP frame-ancestors is the preferred control.',
+                'X-Frame-Options is older but still common.'
+            )
+        ),
+        'cors-misconfiguration' => array(
+            'title' => 'CORS Misconfiguration Simulation',
+            'tier' => 'Advanced',
+            'owasp' => 'A05 Security Misconfiguration',
+            'target' => 'pages/lab_scenario.php?cat=A05',
+            'goal' => 'Analyze how permissive cross-origin settings can expose authenticated data.',
+            'story' => 'A simulated API returns student data and reflects Origin headers without a strict allowlist.',
+            'skills' => array('Origin review', 'Credentialed requests', 'API exposure', 'Header analysis'),
+            'steps' => array(
+                'Open the A05 scenario page.',
+                'Write a mock Origin header in the HTTP inspector.',
+                'Decide whether credentials should ever be allowed cross-origin.',
+                'Draft a strict CORS policy.'
+            ),
+            'payloads' => array('Origin: https://evil.example', 'Access-Control-Allow-Origin: *', 'Access-Control-Allow-Credentials: true'),
+            'success' => 'The learner explains why wildcard origins and credentials are a dangerous combination.',
+            'hints' => array(
+                'CORS is a browser permission model, not authentication.',
+                'Wildcard origins are risky for private APIs.',
+                'Credentials require exact trusted origins.',
+                'Prefer no CORS unless a real cross-origin client needs it.'
+            )
         )
     );
 }

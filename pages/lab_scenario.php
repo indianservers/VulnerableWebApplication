@@ -91,6 +91,8 @@ $secure_href = preg_match('/^pages\//', $lab['secure_target']) ? '../' . $lab['s
                 <textarea rows="6" placeholder="Paste raw request, changed parameter, cookie, or generated SQL here."></textarea>
             </section>
 
+            <?php renderRequestInspector($target); ?>
+
             <section class="lab-panel tab-panel" id="tab-evidence">
                 <h2>Evidence Slots</h2>
                 <div class="evidence-grid">

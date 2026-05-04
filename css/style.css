@@ -1015,6 +1015,68 @@ footer {
     margin-top: 12px;
 }
 
+.progress-strip,
+.progress-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.progress-strip span {
+    background: #edf4fb;
+    color: #64748b;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.progress-strip span.done {
+    background: #e7f7ed;
+    color: #155a34;
+}
+
+.progress-actions form {
+    flex: 1 1 150px;
+}
+
+.reset-card {
+    background: #fff;
+    border: 1px solid rgba(17, 41, 69, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(18, 38, 63, 0.08);
+    padding: 22px;
+}
+
+.reset-card h2 {
+    color: #10243f;
+    margin-bottom: 8px;
+}
+
+.reset-card p {
+    color: #5a677b;
+    line-height: 1.6;
+    min-height: 52px;
+}
+
+.reset-card.danger-zone {
+    border-top: 5px solid #d94841;
+}
+
+.challenge-card small {
+    color: #64748b;
+    font-weight: 800;
+}
+
+.request-inspector {
+    overflow: hidden;
+}
+
+.walkthrough-steps {
+    display: grid;
+    gap: 12px;
+}
+
 @keyframes slideIn {
     from {
         opacity: 0;
