@@ -1,0 +1,7 @@
+<?php
+define('DB_HOST', 'localhost');
+define('DB_USER', 'myuser');
+define('DB_PASS', 'StrongPassword123');
+define('DB_NAME', 'myapp_db');
+// Exposed backup file for OWASP A05 security misconfiguration lab only.
+?>

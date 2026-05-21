@@ -24,6 +24,7 @@ function renderLabNav(): void {
     echo '<a href="' . e($base . 'pages/owasp_lab.php') . '">OWASP Labs</a>';
     echo '<a href="' . e($base . 'pages/attack_paths.php') . '">Attack Paths</a>';
     echo '<a href="' . e($base . 'pages/challenges.php') . '">Challenges</a>';
+    echo '<a href="' . e($base . 'pages/ctf_scoreboard.php') . '">Scoreboard</a>';
     echo '<a href="' . e($base . 'pages/progress.php') . '">Progress</a>';
     echo '<a href="' . e($base . 'pages/lab_reset.php') . '">Reset</a>';
     echo '<a href="' . e($base . 'pages/report_builder.php') . '">Reports</a>';

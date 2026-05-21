@@ -7,6 +7,7 @@ This application is designed for **educational purposes only** to demonstrate co
 
 This is a comprehensive educational security application that demonstrates:
 - **SQL Injection Vulnerabilities** - Login and search features
+- **Cryptographic Failures** - MD5 hashing, Base64 pseudo-encryption, PII in URLs, and hardcoded secrets
 - **XSS (Cross-Site Scripting)** - Comment system
 - **Secure Alternatives** - Proper implementation with prepared statements
 - **Best Practices** - How to fix these vulnerabilities

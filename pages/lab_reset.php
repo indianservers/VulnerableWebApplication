@@ -2,6 +2,7 @@
 include '../includes/config.php';
 require_once '../includes/lab_ui.php';
 require_once '../includes/lab_state.php';
+require_once '../includes/security_lab_helpers.php';
 
 $message = '';
 $details = '';
@@ -20,13 +21,38 @@ function runResetSql(mysqli $conn, string $sql): void {
     }
 }
 
+function resetCategoryRuntime(string $category): void {
+    ensureLabRuntime();
+    $_SESSION['attack_events'] = array_values(array_filter($_SESSION['attack_events'], function ($event) use ($category) {
+        return ($event['category'] ?? '') !== $category;
+    }));
+
+    $category_flags = array(
+        'A01' => array('FLAG{csrf_grade_forgery_001}', 'FLAG{path_traversal_report_001}', 'FLAG{path_traversal_log_002}'),
+        'A02' => array(),
+        'A03' => array('FLAG{command_injection_ping_001}', 'FLAG{command_injection_file_reader_002}', 'FLAG{xss_reflected_search_001}', 'FLAG{xxe_file_read_001}'),
+        'A04' => array('FLAG{unsafe_file_upload_001}'),
+        'A05' => array('FLAG{verbose_error_leak_001}'),
+        'A07' => array('FLAG{bruteforce_no_lockout_001}'),
+        'A08' => array('FLAG{insecure_deserialization_admin_001}'),
+        'A09' => array('FLAG{missing_audit_trail_001}'),
+        'A10' => array('FLAG{ssrf_internal_fetch_001}')
+    );
+
+    foreach ($category_flags[$category] ?? array() as $flag) {
+        unset($_SESSION['captured_flags'][$flag]);
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reset = $_POST['reset'] ?? '';
 
     try {
         if ($reset === 'progress') {
             resetProgress();
-            $message = 'Progress tracker reset for this browser session.';
+            $_SESSION['captured_flags'] = array();
+            $_SESSION['attack_events'] = array();
+            $message = 'Progress tracker, captured flags, and attack events reset for this browser session.';
         } elseif ($reset === 'comments') {
             runResetSql($conn, "
                 DELETE FROM comments;
@@ -53,8 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             initializeDatabaseIfNeeded($conn);
             $conn->select_db(DB_NAME);
             resetProgress();
-            $message = 'Full database and session progress reset.';
+            $_SESSION['captured_flags'] = array();
+            $_SESSION['attack_events'] = array();
+            $message = 'Full database, session progress, flags, and attack events reset.';
             $details = 'The bundled enhanced schema was reloaded.';
+        } elseif ($reset === 'category') {
+            $category = strtoupper((string) ($_POST['category'] ?? ''));
+            resetCategoryRuntime($category);
+            $message = $category . ' flags and attack events reset for this browser session.';
         } else {
             $message = 'Unknown reset option.';
         }

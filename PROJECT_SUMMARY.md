@@ -94,6 +94,7 @@ Vulnerable Web/
 ### 🔐 Security Demonstrations
 - [x] **SQL Injection** - Vulnerable login (demonstrate authentication bypass)
 - [x] **SQL Injection** - Vulnerable search (demonstrate data extraction)
+- [x] **Cryptographic Failures** - MD5 hashes, Base64 encoding, PII in URLs, hardcoded secrets
 - [x] **XSS (Cross-Site Scripting)** - Vulnerable comments (demonstrate script injection)
 - [x] **Secure Implementation** - Prepared statements (show how to fix)
 - [x] **Output Encoding** - Safe data display
@@ -187,6 +188,7 @@ Teacher: teacher_science / teacher123
 |---------------|------|------|
 | SQL Injection (Login) | `/pages/login_vulnerable.php` | Try: `admin' OR '1'='1` |
 | SQL Injection (Search) | `/pages/news_vulnerable.php` | Try: `' OR '1'='1` |
+| Cryptographic Failures | `/pages/crypto_vulnerable.php` | Try SSN: `123-45-6789` |
 | XSS | `/pages/xss_vulnerable.php` | Try: `<script>alert('XSS')</script>` |
 
 ### Feature Testing

@@ -36,6 +36,11 @@ $db_bootstrap_status = $GLOBALS['db_bootstrap_status'] ?? null;
             <a href="pages/news_vulnerable.php">SQLi Search</a>
             <a href="pages/news_details.php">News Details</a>
             <a href="pages/xss_vulnerable.php">XSS Demo</a>
+            <a href="pages/xss_reflected.php">Reflected XSS</a>
+            <a href="pages/crypto_vulnerable.php">Crypto Failures</a>
+            <a href="pages/cmd_injection_vulnerable.php">Command Injection</a>
+            <a href="pages/ssrf_vulnerable.php">SSRF</a>
+            <a href="pages/ctf_scoreboard.php">Scoreboard</a>
             <a href="pages/profile_idor.php">IDOR Profile</a>
             <a href="pages/grade_tampering.php">Grade Tampering</a>
         </div>
@@ -130,6 +135,48 @@ $db_bootstrap_status = $GLOBALS['db_bootstrap_status'] ?? null;
                     <h4>Stored XSS Comments</h4>
                     <p>Demonstrate script injection through comments and observe how unsafe rendering turns content into code.</p>
                     <a href="pages/xss_vulnerable.php">Test XSS</a>
+                </article>
+
+                <article class="feature-card dangerous">
+                    <span class="card-tag">OWASP A02</span>
+                    <h4>Cryptographic Failures</h4>
+                    <p>Inspect MD5 password hashing, Base64 pseudo-encryption, URL-exposed SSNs, and a hardcoded JWT secret.</p>
+                    <a href="pages/crypto_vulnerable.php">Open crypto lab</a>
+                </article>
+
+                <article class="feature-card secure">
+                    <span class="card-tag">OWASP A02</span>
+                    <h4>Secure Crypto Comparison</h4>
+                    <p>Compare MD5 with bcrypt and Base64 with AES-256 encryption using live demo inputs.</p>
+                    <a href="pages/crypto_secure.php">Open secure crypto</a>
+                </article>
+
+                <article class="feature-card vulnerable">
+                    <span class="card-tag">OWASP A03</span>
+                    <h4>Command Injection</h4>
+                    <p>Run the school network ping and file reader tools to see why shell concatenation is dangerous.</p>
+                    <a href="pages/cmd_injection_vulnerable.php">Open command lab</a>
+                </article>
+
+                <article class="feature-card vulnerable">
+                    <span class="card-tag">OWASP A10</span>
+                    <h4>SSRF Fetcher</h4>
+                    <p>Use a server-side URL fetcher to request localhost, loopback ports, and metadata-style endpoints.</p>
+                    <a href="pages/ssrf_vulnerable.php">Open SSRF lab</a>
+                </article>
+
+                <article class="feature-card vulnerable">
+                    <span class="card-tag">OWASP A01</span>
+                    <h4>CSRF Grade Change</h4>
+                    <p>Compare a tokenless grade form with a secure CSRF-token protected version and attacker auto-submit page.</p>
+                    <a href="pages/csrf_vulnerable.php">Open CSRF lab</a>
+                </article>
+
+                <article class="feature-card vulnerable">
+                    <span class="card-tag">OWASP A05</span>
+                    <h4>Security Misconfiguration</h4>
+                    <p>Trigger verbose errors, inspect missing headers, and download an intentionally exposed backup file.</p>
+                    <a href="pages/security_misconfig.php">Open A05 lab</a>
                 </article>
 
                 <article class="feature-card dangerous">

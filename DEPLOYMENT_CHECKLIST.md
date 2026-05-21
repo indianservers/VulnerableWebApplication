@@ -12,6 +12,7 @@
 - ✅ `pages/login_secure.php` - Secure login with auto-redirect to dashboards
 - ✅ `pages/news_vulnerable.php` - SQL Injection (search)
 - ✅ `pages/articles_secure.php` - Secure search
+- ✅ `pages/crypto_vulnerable.php` - OWASP A02 cryptographic failures
 - ✅ `pages/xss_vulnerable.php` - XSS demonstration
 
 #### Management System Pages

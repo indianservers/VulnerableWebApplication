@@ -70,6 +70,32 @@ $categories = labCategories();
                 <div><strong>4. Remediate</strong><span>Compare the secure pattern without removing the vulnerable lab.</span></div>
             </div>
         </section>
+
+        <section class="lab-panel">
+            <h2>Tool Integration Guides</h2>
+            <div class="split-compare">
+                <div>
+                    <h3>SQLMap</h3>
+                    <div class="code-block"><code>sqlmap -u "http://localhost/pages/news_vulnerable.php?search=test" --batch --dbs</code></div>
+                    <div class="code-block"><code>sqlmap -u "http://localhost/pages/news_details.php?id=1" --batch --current-db</code></div>
+                </div>
+                <div>
+                    <h3>Burp and curl</h3>
+                    <div class="code-block"><code>Burp: Proxy browser traffic, intercept the POST from csrf_vulnerable.php, then replay it without a token.</code></div>
+                    <div class="code-block"><code>curl -d "url=http://localhost/admin" http://localhost/pages/ssrf_vulnerable.php</code></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-panel">
+            <h2>Side-by-side Code Diff Index</h2>
+            <div class="attack-grid">
+                <article class="attack-card-small"><h4>CSRF</h4><p>Tokenless grade change vs hash_equals token validation.</p><a href="csrf_vulnerable.php">Open diff</a></article>
+                <article class="attack-card-small"><h4>Command Injection</h4><p>Shell concatenation vs escapeshellarg and file basename constraints.</p><a href="cmd_injection_vulnerable.php">Open diff</a></article>
+                <article class="attack-card-small"><h4>Upload</h4><p>Original filename in webroot vs MIME validation and renamed storage outside webroot.</p><a href="file_upload_vulnerable.php">Open diff</a></article>
+                <article class="attack-card-small"><h4>Crypto</h4><p>MD5/Base64 vs password_hash/password_verify and AES demo.</p><a href="crypto_secure.php">Open diff</a></article>
+            </div>
+        </section>
     </main>
 
     <footer>

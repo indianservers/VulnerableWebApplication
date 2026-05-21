@@ -25,11 +25,13 @@ $stmt->close();
 
 // Get students in selected course
 $selected_course = $_GET['course'] ?? ($courses[0]['id'] ?? null);
+// [VULN: A01 Broken Access Control] No ownership check - any teacher can see any course
+// Try: teacher_science logs in, then visits ?course=4 (an English course)
 $students_in_course = array();
 
 if ($selected_course) {
     $stmt = $conn->prepare("
-        SELECT s.id, s.student_id_number, u.full_name, u.email, sc.attendance_percentage, g.total_marks, g.grade_letter
+        SELECT s.id, s.student_id_number, u.full_name, u.email, sc.attendance_percentage, g.id as grade_id, g.total_marks, g.grade_letter
         FROM students s
         JOIN users u ON s.user_id = u.id
         JOIN student_courses sc ON s.id = sc.student_id
@@ -49,10 +51,21 @@ if ($selected_course) {
 // Get statistics
 $total_students = 0;
 $total_assignments_submitted = 0;
+$grade_update_msg = '';
 
+// [VULN: A03 SQL Injection] $selected_course comes from $_GET['course'] unvalidated
+// Payload: ?course=1 UNION SELECT password,2 FROM users--
 if ($selected_course) {
     $result = $conn->query("SELECT COUNT(*) as count FROM student_courses WHERE course_id = $selected_course");
     $total_students = $result->fetch_assoc()['count'];
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_grade'])) {
+    // [VULN: A08 CSRF] No CSRF token - any page can submit this form cross-origin
+    $grade_id  = $_POST['grade_id'];
+    $new_marks = $_POST['marks'];
+    $conn->query("UPDATE grades SET total_marks = '$new_marks' WHERE id = $grade_id");
+    $grade_update_msg = "Grade updated!";
 }
 ?>
 <!DOCTYPE html>
@@ -100,6 +113,9 @@ if ($selected_course) {
             <div>
                 <div class="card">
                     <h2>📚 My Courses (<?php echo count($courses); ?>)</h2>
+                    <div style="background:#f8d7da;border:1px solid #dc3545;padding:10px;border-radius:5px;margin-bottom:1rem;font-size:0.85rem;">
+                        <strong>Lab Hint [A01]:</strong> Course links use <code>?course=</code>, but this page does not verify that the selected course belongs to the logged-in teacher.
+                    </div>
                     <?php foreach ($courses as $course): ?>
                         <div class="course-card <?php echo ($selected_course == $course['id']) ? 'active' : ''; ?>">
                             <a href="teacher_dashboard.php?course=<?php echo $course['id']; ?>" style="text-decoration: none; color: inherit;">
@@ -114,7 +130,13 @@ if ($selected_course) {
             <div>
                 <div class="card">
                     <h2>📊 Course Statistics</h2>
+                    <div style="background:#fff3cd;border:1px solid #ffc107;padding:10px;border-radius:5px;margin-bottom:1rem;font-size:0.85rem;">
+                        🔍 <strong>Lab Hint [A03]:</strong> The <code>?course=</code> parameter is used directly in a SQL query. Try injecting into it.
+                    </div>
                     <?php if ($selected_course): ?>
+                        <?php if ($grade_update_msg): ?>
+                            <div class="alert alert-success"><?php echo htmlspecialchars($grade_update_msg); ?></div>
+                        <?php endif; ?>
                         <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-bottom: 1rem;">
                             <p><strong>Total Students Enrolled:</strong> <?php echo $total_students; ?></p>
                             <p><strong>Course Progress:</strong> Faculty Management</p>
@@ -128,6 +150,7 @@ if ($selected_course) {
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Attendance %</th>
+                                    <th>Grade ID</th>
                                     <th>Marks</th>
                                     <th>Grade</th>
                                 </tr>
@@ -139,12 +162,28 @@ if ($selected_course) {
                                         <td><?php echo htmlspecialchars($student['full_name']); ?></td>
                                         <td><?php echo htmlspecialchars($student['email']); ?></td>
                                         <td><?php echo htmlspecialchars($student['attendance_percentage'] ?? 'N/A'); ?>%</td>
+                                        <td><?php echo htmlspecialchars($student['grade_id'] ?? 'N/A'); ?></td>
                                         <td><?php echo htmlspecialchars($student['total_marks'] ?? '-'); ?></td>
                                         <td><?php echo htmlspecialchars($student['grade_letter'] ?? 'Pending'); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+
+                        <div style="background:#fff3cd;border:1px solid #ffc107;padding:10px;border-radius:5px;margin:1rem 0;font-size:0.85rem;">
+                            <strong>Lab Hint [A08]:</strong> This grade update form has no CSRF token. A malicious page could submit it for a logged-in teacher.
+                        </div>
+                        <form method="POST">
+                            <div class="form-group">
+                                <label for="grade_id">Grade ID</label>
+                                <input type="text" id="grade_id" name="grade_id" placeholder="Example: 1">
+                            </div>
+                            <div class="form-group">
+                                <label for="marks">New Total Marks</label>
+                                <input type="text" id="marks" name="marks" placeholder="Example: 99.9">
+                            </div>
+                            <button type="submit" name="update_grade">Update Grade Without CSRF Token</button>
+                        </form>
                     <?php else: ?>
                         <div class="alert alert-info">Select a course to view details.</div>
                     <?php endif; ?>
